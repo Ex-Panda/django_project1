@@ -5,6 +5,8 @@
             <div class="card mb-4 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">{{ object.name_product }}</h4>
+                    <a href="{% url 'catalog:update_product' object.pk %}" type="button"
+                           class="btn btn-sm btn-outline-secondary">Редактировать</a>
                 </div>
                 <img src="{{ object.image_product|filter_media }}" />
                 <div class="card-body">
@@ -12,7 +14,13 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>Категория: {{ object.category_product}}</li>
                         <li>- {{ object.description_product}}</li>
+                        <li>Версия:</li>
+                        {% for version in versions %}
+                        <li> {{ version.version_number }}.{{ version.name_version }}</li>
+                        {% endfor %}
                     </ul>
+                    <a href="{% url 'catalog:create_version' object.pk %}" type="button"
+                           class="btn btn-sm btn-outline-secondary">Редактировать версию</a>
                 </div>
             </div>
         </div>

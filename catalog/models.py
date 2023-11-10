@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
@@ -9,8 +11,8 @@ class Product(models.Model):
     image_product = models.ImageField(upload_to='products/', verbose_name='изображение продукта', **NULLABLE)
     category_product = models.CharField(max_length=100, verbose_name='наименование категории продукта')
     price = models.IntegerField(verbose_name='цена продукта')
-    date_creation = models.DateTimeField(verbose_name='дата создания')
-    last_modified_date = models.DateTimeField(verbose_name='дата последнего изменения')
+    date_creation = models.DateTimeField(verbose_name='дата создания', auto_now_add=True)
+    last_modified_date = models.DateTimeField(verbose_name='дата последнего изменения', auto_now=True)
 
     def __str__(self):
         return f"""{self.name_product} {self.description_product} {self.price} {self.category_product}"""
@@ -32,3 +34,17 @@ class Category(models.Model):
         verbose_name = 'категория'
         verbose_name_plural = 'категории'
         ordering = ('name_category',)
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='продукт')
+    version_number = models.IntegerField(max_length=50, verbose_name='номер версии', default=1)
+    name_version = models.CharField(max_length=100, verbose_name='название версии')
+    sing_version = models.BooleanField(verbose_name='признак текущей версии')
+
+    def __str__(self):
+        return f'{self.product} {self.name_version}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
