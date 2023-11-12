@@ -1,9 +1,20 @@
-from django.shortcuts import render
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
+
+
+class ProtectedView(View):
+    #переопределение get, чтобы анонимный пользователь не мог взаимодействовать с продуктами
+    def get(self, *args, **kwargs):
+        if self.request.user.id is None:
+            return redirect('user_auth:login')
+        else:
+            return super().get(*args, **kwargs)
 
 
 class ProductsListView(ListView):
@@ -32,13 +43,13 @@ class ProductDetailView(DetailView):
         return context
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(ProtectedView, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(ProtectedView, UpdateView):
     model = Product
     form_class = ProductForm
 
@@ -46,7 +57,7 @@ class ProductUpdateView(UpdateView):
         return reverse('catalog:product', args=[self.kwargs.get('pk')])
 
 
-class VersionCreateView(CreateView):
+class VersionCreateView(ProtectedView, CreateView):
     model = Version
     form_class = VersionForm
 
@@ -56,3 +67,5 @@ class VersionCreateView(CreateView):
     def form_valid(self, form):
         form.instance.product_id = self.kwargs['pk']
         return super().form_valid(form)
+
+
