@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
+from user_auth.models import User
 
 
 class ProtectedView(View):
@@ -47,6 +48,14 @@ class ProductCreateView(ProtectedView, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_product = form.save()
+            new_product.user = self.request.user
+            new_product.save()
+
+        return super().form_valid(form)
 
 
 class ProductUpdateView(ProtectedView, UpdateView):

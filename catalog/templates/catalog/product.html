@@ -18,6 +18,9 @@
                         {% for version in versions %}
                         <li> {{ version.version_number }}.{{ version.name_version }}</li>
                         {% endfor %}
+                        <li>Создатель:</li>
+                        <li>{{ object.user|default:'не указан' }}</li>
+
                     </ul>
                     <a href="{% url 'catalog:create_version' object.pk %}" type="button"
                            class="btn btn-sm btn-outline-secondary">Редактировать версию</a>

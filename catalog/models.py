@@ -2,6 +2,8 @@ import datetime
 
 from django.db import models
 
+from user_auth.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -13,6 +15,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='цена продукта')
     date_creation = models.DateTimeField(verbose_name='дата создания', auto_now_add=True)
     last_modified_date = models.DateTimeField(verbose_name='дата последнего изменения', auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
 
     def __str__(self):
         return f"""{self.name_product} {self.description_product} {self.price} {self.category_product}"""

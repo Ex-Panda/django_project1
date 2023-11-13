@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext as _
 
-from catalog.models import NULLABLE
+NULLABLE = {'blank': True, 'null': True}
 
 
 def generation_password():
