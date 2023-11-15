@@ -2,7 +2,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
 from user_auth.apps import UserAuthConfig
-from user_auth.views import RegisterView, VerificationTemplateView, RecoveryTemplateView
+from user_auth.views import RegisterView, VerificationTemplateView, RecoveryTemplateView, ErrorVerificationTemplateView
 
 app_name = UserAuthConfig.name
 
@@ -11,5 +11,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('verification/', VerificationTemplateView.as_view(), name='verification'),
-    path('recovery/', RecoveryTemplateView.as_view(), name='recovery')
+    path('recovery/', RecoveryTemplateView.as_view(), name='recovery'),
+    path('error_user/', ErrorVerificationTemplateView.as_view(), name='error_user'),
 ]

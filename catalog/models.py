@@ -16,6 +16,7 @@ class Product(models.Model):
     date_creation = models.DateTimeField(verbose_name='дата создания', auto_now_add=True)
     last_modified_date = models.DateTimeField(verbose_name='дата последнего изменения', auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
+    is_published = models.BooleanField(verbose_name='Опубликован', default=False)
 
     def __str__(self):
         return f"""{self.name_product} {self.description_product} {self.price} {self.category_product}"""
@@ -24,6 +25,13 @@ class Product(models.Model):
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
         ordering = ('price',)
+
+        permissions = [
+            (
+                'product_published',
+                'Can publish product'
+            )
+        ]
 
 
 class Category(models.Model):

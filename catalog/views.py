@@ -1,12 +1,12 @@
-from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version
-from user_auth.models import User
+
 
 
 class ProtectedView(View):
@@ -62,8 +62,21 @@ class ProductUpdateView(ProtectedView, UpdateView):
     model = Product
     form_class = ProductForm
 
+    def get_object(self, queryset=None):
+        #переопределяю метод, получаю объект, проверяю пользователя по требованиям
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user and not self.request.user.is_superuser and not self.request.user.has_perm('catalog.product_published'):
+            raise Http404
+        return self.object
+
     def get_success_url(self):
         return reverse('catalog:product', args=[self.kwargs.get('pk')])
+
+    def get_form_class(self):
+        if self.request.user.has_perm('catalog.product_published'):
+            return ProductModeratorForm
+        else:
+            return ProductForm
 
 
 class VersionCreateView(ProtectedView, CreateView):
@@ -76,5 +89,3 @@ class VersionCreateView(ProtectedView, CreateView):
     def form_valid(self, form):
         form.instance.product_id = self.kwargs['pk']
         return super().form_valid(form)
-
-

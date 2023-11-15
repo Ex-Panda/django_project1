@@ -33,10 +33,12 @@ class VerificationTemplateView(TemplateView):
     def post(self, request):
         verification_code = request.POST.get('verification_code')
         user_code = User.objects.filter(verification_code=verification_code).first()
-        if user_code:
+        if user_code is not None and user_code.verification_code == verification_code:
             user_code.is_active = True
             user_code.save()
-        return redirect('user_auth:login')
+            return redirect('user_auth:login')
+        else:
+            return redirect('user_auth:error_user')
 
 
 class RecoveryTemplateView(TemplateView):
@@ -58,4 +60,10 @@ class RecoveryTemplateView(TemplateView):
                         {result}"""
             send_mail(subject, message, settings.EMAIL_HOST_USER, [email_user.email])
         return redirect('user_auth:login')
+
+
+class ErrorVerificationTemplateView(TemplateView):
+    template_name = 'user_auth/error_user.html'
+    success_url = reverse_lazy('user_auth:verification')
+
 

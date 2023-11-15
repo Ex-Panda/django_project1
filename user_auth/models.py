@@ -23,7 +23,7 @@ class User(AbstractUser):
 
     avatar = models.ImageField(verbose_name='аватар', **NULLABLE)
     phone_number = models.IntegerField(_("phone number"), **NULLABLE)
-    country = models.CharField(_("country"), max_length=50)
+    country = models.CharField(_("country"), max_length=50, **NULLABLE)
 
     is_active = models.BooleanField(
         _("active"),
