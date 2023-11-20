@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -6,7 +7,7 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version
-
+from config import settings
 
 
 class ProtectedView(View):
